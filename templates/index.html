@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FraudLens | AI Scam Detection</title>
+    <meta name="description" content="Detect scam messages and phishing links instantly with FraudLens AI.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Phosphor Icons for premium icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <!-- Image Background -->
+    <div class="image-background"></div>
+    <div class="quantum-vignette"></div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="ph-fill ph-shield-check"></i>
+            <span>FraudLens</span>
+        </div>
+        <div class="nav-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+            <button id="nav-history-btn" class="secondary-btn hidden" style="background: rgba(255,255,255,0.05);">
+                <i class="ph-bold ph-clock-counter-clockwise"></i>
+                <span class="hide-mobile">History</span>
+            </button>
+            <div id="user-greeting" class="user-greeting hidden" style="cursor: pointer;" title="Edit Profile">
+                <span>Hello, <strong id="display-name">User</strong></span>
+                <div class="avatar">
+                    <img id="nav-avatar-img" src="" alt="Avatar" class="avatar-img hidden">
+                    <i id="nav-avatar-icon" class="ph-fill ph-user"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Screen 1: Onboarding -->
+    <main id="onboarding-screen" class="container screen active-screen">
+        <div class="setup-card glass-panel tilt-card">
+            <div class="setup-header">
+                <i class="ph-duotone ph-rocket-launch setup-icon"></i>
+                <h2>Welcome to FraudLens</h2>
+            </div>
+            
+            <form id="onboarding-form" class="setup-form">
+                <div class="profile-pic-container" style="margin: 0 auto 1.5rem;">
+                    <img id="onboarding-profile-preview" src="" alt="Profile Preview" class="avatar-large hidden">
+                    <div id="onboarding-profile-placeholder" class="avatar-large">
+                        <i class="ph-fill ph-user"></i>
+                    </div>
+                    <label for="onboarding-profile-upload" class="upload-overlay">
+                        <i class="ph-bold ph-camera"></i>
+                    </label>
+                    <input type="file" id="onboarding-profile-upload" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="input-group">
+                    <label for="user-name">Your Name</label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-user input-icon"></i>
+                        <input type="text" id="user-name" placeholder="E.g., Sachiii" required autocomplete="off">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="user-email">Email Address <span class="optional">(Optional)</span></label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-envelope input-icon"></i>
+                        <input type="email" id="user-email" placeholder="E.g., sachiii@example.com" autocomplete="off">
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-btn pulse-btn glow-effect">
+                    <span>Continue to Dashboard</span>
+                    <i class="ph-bold ph-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Screen 2: Dashboard -->
+    <main id="dashboard-screen" class="container screen hidden">
+        <header class="hero">
+            <h1>Protect Yourself from <span class="text-gradient">Scams</span></h1>
+        </header>
+
+        <div class="dashboard-stats glass-panel tilt-card">
+            <div class="stat-box">
+                <i class="ph-duotone ph-scan"></i>
+                <div class="stat-info">
+                    <span class="stat-value" id="stat-total-scans">0</span>
+                    <span class="stat-label">Total Scans</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="ph-duotone ph-warning-octagon"></i>
+                <div class="stat-info">
+                    <span class="stat-value danger-text" id="stat-risky-scans">0</span>
+                    <span class="stat-label">Risky Links</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="ph-duotone ph-shield-check"></i>
+                <div class="stat-info">
+                    <span class="stat-value success-text" id="stat-safe-scans">0</span>
+                    <span class="stat-label">Safe Links</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="input-section glass-panel tilt-card">
+            <div class="mode-toggle-wrapper">
+                <span class="mode-label active" id="mode-url-label">URL</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="mode-toggle-checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <span class="mode-label" id="mode-text-label">Text</span>
+            </div>
+            
+            <div class="input-wrapper-lg">
+                <i class="ph ph-text-aa input-icon-lg"></i>
+                <textarea id="content-input" placeholder="Paste a suspicious URL (e.g., http://amaz0n-update.tk) or a scam message here..."></textarea>
+            </div>
+            <div class="action-bar">
+                <div style="flex-grow: 1;"></div>
+                
+                <button id="clear-btn" class="secondary-btn" type="button">
+                    <i class="ph-bold ph-trash"></i>
+                    <span>Clear</span>
+                </button>
+                <button id="analyze-btn" class="primary-btn glow-effect">
+                    <i class="ph-bold ph-magnifying-glass"></i>
+                    <span>Analyze Content</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-state hidden">
+            <div class="spinner-container">
+                <div class="hex-spinner"></div>
+            </div>
+            <p>Analyzing for threats...</p>
+        </div>
+
+        <section id="results-section" class="results-section hidden">
+            <!-- Results injected via JS -->
+        </section>
+    </main>
+
+    <!-- Screen 3: History -->
+    <main id="history-screen" class="container screen hidden">
+        <header class="hero" style="display: flex; justify-content: space-between; align-items: center; text-align: left; margin-bottom: 2rem;">
+            <div>
+                <h1>Scan <span class="text-gradient">History</span></h1>
+            </div>
+            <button id="back-dashboard-btn" class="secondary-btn glow-effect">
+                <i class="ph-bold ph-arrow-left"></i>
+                <span>Back</span>
+            </button>
+        </header>
+
+        <div class="glass-panel tilt-card">
+            <ul id="history-list" class="history-list-view">
+                <li class="empty-history" style="text-align: center; color: var(--text-muted); padding: 2rem;">No scans yet</li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal hidden">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content glass-panel tilt-card">
+            <button id="close-modal-btn" class="close-btn"><i class="ph-bold ph-x"></i></button>
+            <div class="modal-header">
+                <h2>Your Profile</h2>
+                <p>Manage your details and avatar.</p>
+            </div>
+            <form id="profile-form" class="setup-form">
+                <div class="profile-pic-container">
+                    <img id="profile-preview" src="" alt="Profile Preview" class="avatar-large hidden">
+                    <div id="profile-placeholder" class="avatar-large">
+                        <i class="ph-fill ph-user"></i>
+                    </div>
+                    <label for="profile-upload" class="upload-overlay">
+                        <i class="ph-bold ph-camera"></i>
+                    </label>
+                    <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="input-group">
+                    <label for="edit-name">Name</label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-user input-icon"></i>
+                        <input type="text" id="edit-name" required autocomplete="off">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="edit-email">Email Address <span class="optional">(Optional)</span></label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-envelope input-icon"></i>
+                        <input type="email" id="edit-email" autocomplete="off">
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-btn glow-effect w-100" style="margin-top: 1.5rem;">
+                    <i class="ph-bold ph-floppy-disk"></i>
+                    <span>Save Changes</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
